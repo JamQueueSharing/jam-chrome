@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Morphe Jam for YouTube Music",
+  "description": "Host and join Morphe Jam sessions from YouTube Music. Requires the local Jam helper.",
+  "version": "0.2.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAywZKAlSl522BwXn0d2hr91cXBCOY9W1KOdkcTIJdGt6fpM4C90Ry9oMp3EHGCSBwF4s+Rg2702yfUtG2jBtniI0jIDMVMaSm4RhVVAFNeD1UJZgz0rleJm4Wa+zJ93IU7MnZhlZyPiOu7P5VudrWpw53ozxYuVMVR732ZJSAu8hkqqkuOw4O960yFncoObteAMAILPCuGZ40KrBQUsdKPdjnPkQuVrFg/zP6UBAGt1YvDcnKXZbZ0VHa56X7FW6mLSM2qmyftfTqI7U/TPl53RmalszCjm4sKNap2n9ynDOQBmofG/QYX7ygJ6D/O4ViW3q6T7fswYmLRoHleQ2qgQIDAQAB",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'"
+  },
+  "minimum_chrome_version": "120",
+  "permissions": ["nativeMessaging", "scripting"],
+  "host_permissions": ["https://music.youtube.com/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_title": "Open Morphe Jam" },
+  "content_scripts": [
+    {
+      "matches": ["https://music.youtube.com/*"],
+      "js": ["keyboard-guard.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://music.youtube.com/*"],
+      "js": ["vendor/lucide.min.js", "vendor/qr.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

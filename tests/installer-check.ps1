@@ -1,0 +1,37 @@
+$ErrorActionPreference = 'Stop'
+$root = Split-Path $PSScriptRoot -Parent
+$installRoot = Join-Path $root ('test-output\installer-' + [guid]::NewGuid().ToString('N'))
+$archive = Join-Path $root 'dist\jam-chrome-0.2.0-windows.zip'
+$bootstrap = Join-Path $root 'install.ps1'
+$registry = 'HKCU:\Software\Google\Chrome\NativeMessagingHosts\app.morphe.jam.chrome'
+$previous = if (Test-Path -LiteralPath $registry) { (Get-Item -LiteralPath $registry).GetValue('') } else { $null }
+try {
+    & $bootstrap -InstallRoot $installRoot -ArchivePath $archive -SkipPrerequisites
+    $current = Join-Path $installRoot 'current'
+    $before = (Get-FileHash -LiteralPath (Join-Path $current 'extension\manifest.json')).Hash
+    $registration = (Get-Item -LiteralPath $registry).GetValue('')
+    & $bootstrap -InstallRoot $installRoot -ArchivePath $archive -SkipPrerequisites
+    if (!(Get-ChildItem -LiteralPath $installRoot -Directory -Filter 'backup-*')) { throw 'Update did not retain a backup.' }
+    $rejected = $false
+    try { & $bootstrap -InstallRoot $installRoot -ArchivePath (Join-Path $root 'README.md') -SkipPrerequisites }
+    catch { $rejected = $_.Exception.Message -like '*checksum mismatch*' }
+    if (!$rejected) { throw 'Modified archive was not rejected.' }
+
+    # Simulate a missing runtime after extraction to exercise transaction rollback.
+    $oldPath = $env:PATH
+    $rolledBack = $false
+    try {
+        $env:PATH = ''
+        & $bootstrap -InstallRoot $installRoot -ArchivePath $archive -SkipPrerequisites
+    } catch { $rolledBack = $true }
+    finally { $env:PATH = $oldPath }
+    if (!$rolledBack) { throw 'Expected registration failure was not observed.' }
+    if ((Get-FileHash -LiteralPath (Join-Path $current 'extension\manifest.json')).Hash -ne $before) { throw 'Previous files were not restored.' }
+    if ((Get-Item -LiteralPath $registry).GetValue('') -ne $registration) { throw 'Previous registration was not restored.' }
+    Write-Host 'Install, update backup, corrupt archive rejection and rollback: passed.'
+} finally {
+    if ($null -ne $previous) {
+        New-Item -Path $registry -Force | Out-Null
+        Set-Item -LiteralPath $registry -Value $previous
+    } elseif (Test-Path -LiteralPath $registry) { Remove-Item -LiteralPath $registry }
+}

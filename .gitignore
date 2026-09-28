@@ -1,0 +1,8 @@
+node_modules/
+installed/
+test-output/
+dist/
+*.pem
+*.key
+.env*
+*.log
