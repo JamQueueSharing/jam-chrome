@@ -7,10 +7,10 @@ Host and join Morphe Jam sessions on **https://music.youtube.com/** using the An
 Run in PowerShell (close active Jams before installing or updating):
 
 ```powershell
-& ([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/JamQueueSharing/jam-chrome/v0.2.0/install.ps1').Content))
+& ([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/JamQueueSharing/jam-chrome/v0.2.1/install.ps1').Content))
 ```
 
-The script downloads release 0.2.0, verifies a pinned SHA-256, installs missing Node.js/Java through winget, and registers the native helper for your Windows user. Runtime dependencies and browser assets are included. Node.js 22+ and Java 17+ are required; an outdated existing runtime must be upgraded manually. Review [install.ps1](install.ps1) before running downloaded code. See [SECURITY.md](SECURITY.md) for the trust model and limitations.
+The script downloads release 0.2.1, verifies a pinned SHA-256, installs missing Node.js/Java through winget, and registers the native helper for your Windows user. Runtime dependencies and browser assets are included. Node.js 22+ and Java 17+ are required; an outdated existing runtime must be upgraded manually. Review [install.ps1](install.ps1) before running downloaded code. See [SECURITY.md](SECURITY.md) for the trust model and limitations.
 
 1. Open `chrome://extensions`, enable Developer mode, and choose **Load unpacked**.
 2. Select `%LOCALAPPDATA%\JamQueueSharing\JamChrome\current\extension` (the installer prints the full path).

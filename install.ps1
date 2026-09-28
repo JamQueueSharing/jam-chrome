@@ -4,8 +4,8 @@ param(
     [switch] $SkipPrerequisites
 )
 $ErrorActionPreference = 'Stop'
-$version = '0.2.0'
-$expectedHash = 'c51dbc72a7afa7e78ab84f8fc89c511a49b82139bd8131b8b1ceec4d237869d1'
+$version = '0.2.1'
+$expectedHash = 'facd964f74cc673c6bf28ca4378eb627be645a1f81ad8c5bef224285f766b174'
 $archiveName = "jam-chrome-$version-windows.zip"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -30,7 +30,7 @@ if ($InstallRoot -match '[%"\r\n]') { throw 'Unsupported installation path.' }
 # Reject junctions before writing or moving any installation files.
 $ancestor = $InstallRoot
 while ($ancestor) {
-    if ((Test-Path -LiteralPath $ancestor) -and ((Get-Item -LiteralPath $ancestor).Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Installation paths must not be links or junctions.' }
+    if ((Test-Path -LiteralPath $ancestor) -and ((Get-Item -LiteralPath $ancestor -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Installation paths must not be links or junctions.' }
     $ancestor = Split-Path $ancestor -Parent
 }
 New-Item -ItemType Directory -Path $InstallRoot -Force | Out-Null
@@ -64,7 +64,7 @@ if (!$SkipPrerequisites) {
 
 $current = Assert-Child (Join-Path $InstallRoot 'current') $InstallRoot
 $backup = Assert-Child (Join-Path $InstallRoot ('backup-' + [guid]::NewGuid().ToString('N'))) $InstallRoot
-if ((Test-Path -LiteralPath $current) -and ((Get-Item -LiteralPath $current).Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Current installation must not be a link or junction.' }
+if ((Test-Path -LiteralPath $current) -and ((Get-Item -LiteralPath $current -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Current installation must not be a link or junction.' }
 $registry = 'HKCU:\Software\Google\Chrome\NativeMessagingHosts\app.morphe.jam.chrome'
 $previousRegistration = if (Test-Path -LiteralPath $registry) { (Get-Item -LiteralPath $registry).GetValue('') } else { $null }
 $hadCurrent = Test-Path -LiteralPath $current

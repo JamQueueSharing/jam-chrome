@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Morphe Jam for YouTube Music",
   "description": "Host and join Morphe Jam sessions from YouTube Music. Requires the local Jam helper.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAywZKAlSl522BwXn0d2hr91cXBCOY9W1KOdkcTIJdGt6fpM4C90Ry9oMp3EHGCSBwF4s+Rg2702yfUtG2jBtniI0jIDMVMaSm4RhVVAFNeD1UJZgz0rleJm4Wa+zJ93IU7MnZhlZyPiOu7P5VudrWpw53ozxYuVMVR732ZJSAu8hkqqkuOw4O960yFncoObteAMAILPCuGZ40KrBQUsdKPdjnPkQuVrFg/zP6UBAGt1YvDcnKXZbZ0VHa56X7FW6mLSM2qmyftfTqI7U/TPl53RmalszCjm4sKNap2n9ynDOQBmofG/QYX7ygJ6D/O4ViW3q6T7fswYmLRoHleQ2qgQIDAQAB",
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'"
